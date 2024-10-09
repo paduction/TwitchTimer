@@ -8,8 +8,12 @@
 			(change)="onTimeChange($event)"
 			style="padding: 10px; font-size: 12pt"
 		>
-			<option *ngFor="let time of availableTimes" [value]="time">
-				Watch clip: {{ time }}
+			<option
+				*ngFor="let time of availableTimes"
+				[value]="time"
+				[selected]="time === selectedTime"
+			>
+				Countdown: {{ time }}
 			</option>
 		</select>
 	</form>

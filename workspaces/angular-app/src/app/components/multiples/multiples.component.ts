@@ -35,6 +35,7 @@ export class MultiplesComponent implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit(): void {
+		// S'abonner aux changements du temps restant et de l'état du compte à rebours
 		this.countdownService.remainingTime$.subscribe((remaining) => {
 			this.updateDisplayTime(remaining);
 		});
@@ -43,8 +44,10 @@ export class MultiplesComponent implements OnInit, OnDestroy {
 			this.isRunning = isRunning;
 		});
 
+		// Charger le temps sauvegardé
 		this.loadSavedTime();
 
+		// Gestion de la table de multiplication
 		this.electronIpc.receive<number[]>(
 			WindowApiConst.MULTIPLES_OUTPUT,
 			(output: number[]) => {
@@ -59,22 +62,27 @@ export class MultiplesComponent implements OnInit, OnDestroy {
 		this.onSubmit();
 	}
 
+	// Naviguer vers la page de paramètres sans mettre en pause le timer
 	navigateToSettings() {
-		this.router.navigate(['/settings']); // Navigue vers la page de settings
+		this.router.navigate(['/settings']);
 	}
 
+	// Charger le temps sauvegardé à partir du localStorage et mettre à jour le service
 	loadSavedTime() {
 		const savedTime = localStorage.getItem('selectedTime');
 		if (savedTime) {
 			const selectedTime = +savedTime;
-			this.countdownService.setSelectedTime(selectedTime);
+			this.selectedTime = selectedTime;
+			this.countdownService.setSelectedTime(selectedTime); // Synchroniser avec le service
 		}
 	}
 
+	// Gérer le changement de temps dans le service
 	onTimeChange() {
-		this.countdownService.setSelectedTime(this.selectedTime); // Sauvegarder la nouvelle valeur dans le service
+		this.countdownService.setSelectedTime(this.selectedTime);
 	}
 
+	// Mettre à jour l'affichage du temps
 	updateDisplayTime(remaining: number) {
 		const minutes = Math.floor(remaining / 60);
 		const seconds = remaining % 60;
@@ -82,29 +90,34 @@ export class MultiplesComponent implements OnInit, OnDestroy {
 		this.updateValue(remaining);
 	}
 
+	// Mettre à jour la valeur du spinner en fonction du temps restant
 	updateValue(remaining: number) {
 		const totalTime = this.countdownService.selectedTime * 60; // Utilise la valeur sélectionnée dans le service
 		this.value = (remaining / totalTime) * 100;
 	}
 
+	// Basculer l'état du compte à rebours (lecture/pause)
 	toggleCountdown() {
 		this.countdownService.toggleCountdown();
 	}
 
+	// Envoyer les données à Electron
 	onSubmit(): void {
 		const input = this.timesTableForm.value.input;
 		this.electronIpc.send(WindowApiConst.MULTIPLES_INPUT, input);
 	}
 
+	// Ajouter un zéro devant les nombres inférieurs à 10
 	padZero(number_: number): string {
 		return number_ < 10 ? '0' + number_ : number_.toString();
 	}
 
+	// Réinitialiser le compte à rebours
 	resetCountdown() {
 		this.countdownService.resetCountdown();
 	}
 
 	ngOnDestroy() {
-		// Ne rien faire ici, le service gère la destruction
+		// Rien à faire ici, le service gère la destruction
 	}
 }

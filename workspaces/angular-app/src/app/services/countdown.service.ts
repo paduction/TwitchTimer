@@ -5,16 +5,17 @@ import { BehaviorSubject } from 'rxjs';
 	providedIn: 'root',
 })
 export class CountdownService implements OnDestroy {
-	private intervalId: number | undefined; // Type correct pour intervalId
+	private intervalId: number | undefined;
 	private remainingTimeSubject = new BehaviorSubject<number>(0);
 	private isRunningSubject = new BehaviorSubject<boolean>(false);
 	public selectedTime: number = 1; // Temps sélectionné en minutes
 
 	remainingTime$ = this.remainingTimeSubject.asObservable();
 	isRunning$ = this.isRunningSubject.asObservable();
+	public selectedDirectory: string = ''; // Répertoire sélectionné
 
 	constructor() {
-		this.loadSavedTime(); // Charge le temps sauvegardé au démarrage
+		this.loadSavedState(); // Charge l'état sauvegardé (temps restant, état d'exécution)
 	}
 
 	getSelectedTime(): number {
@@ -22,42 +23,67 @@ export class CountdownService implements OnDestroy {
 	}
 
 	// Charger la valeur depuis le localStorage
-	private loadSavedTime(): void {
+	private loadSavedState(): void {
+		// Charger le temps sélectionné
 		const savedTime = localStorage.getItem('selectedTime');
 		if (savedTime) {
-			this.selectedTime = +savedTime; // Convertir en nombre
+			this.selectedTime = +savedTime;
 		}
-		this.resetCountdown(); // Initialise le compte à rebours avec la valeur sauvegardée
+
+		// Charger le temps restant
+		const savedRemainingTime = localStorage.getItem('remainingTime');
+		if (savedRemainingTime) {
+			this.remainingTimeSubject.next(+savedRemainingTime);
+		} else {
+			this.resetCountdown(); // Initialise le compte à rebours avec la valeur sauvegardée
+		}
+
+		// Charger l'état d'exécution
+		const savedIsRunning = localStorage.getItem('isRunning');
+		if (savedIsRunning) {
+			this.isRunningSubject.next(savedIsRunning === 'true');
+			if (savedIsRunning === 'true') {
+				this.startCountdown(); // Reprendre le compte à rebours s'il était en cours
+			}
+		}
 	}
 
-	// Sauvegarder la valeur sélectionnée dans le localStorage
-	private saveSelectedTime(): void {
+	// Sauvegarder l'état dans le localStorage
+	private saveState(): void {
 		localStorage.setItem('selectedTime', this.selectedTime.toString());
+		localStorage.setItem(
+			'remainingTime',
+			this.remainingTimeSubject.getValue().toString()
+		);
+		localStorage.setItem(
+			'isRunning',
+			this.isRunningSubject.getValue().toString()
+		);
 	}
 
 	setSelectedTime(time: number): void {
 		this.selectedTime = time;
-		this.saveSelectedTime(); // Sauvegarde dans localStorage
-		this.resetCountdown(); // Réinitialise le compte à rebours
+		this.saveState(); // Sauvegarder dans le localStorage
+		//this.resetCountdown(); // Réinitialiser le compte à rebours
 	}
 
 	toggleCountdown(): void {
 		if (this.isRunningSubject.getValue()) {
-			clearInterval(this.intervalId!); // Utilise le non-null assertion operator
+			clearInterval(this.intervalId!);
 			this.isRunningSubject.next(false);
 		} else {
 			if (this.remainingTimeSubject.getValue() === 0) {
 				this.remainingTimeSubject.next(this.selectedTime * 60); // Convertir le temps en secondes
 			}
-			this.startCountdown(); // Démarrer ou reprendre le compte à rebours
+			this.startCountdown();
 		}
+		this.saveState(); // Sauvegarder l'état chaque fois qu'on change
 	}
 
 	private startCountdown(): void {
 		this.isRunningSubject.next(true);
 
 		this.intervalId = window.setInterval(() => {
-			// Utilise window.setInterval pour obtenir le bon type
 			const remaining = this.remainingTimeSubject.getValue();
 			if (remaining > 0) {
 				this.remainingTimeSubject.next(remaining - 1);
@@ -65,12 +91,15 @@ export class CountdownService implements OnDestroy {
 				clearInterval(this.intervalId!);
 				this.isRunningSubject.next(false);
 			}
+			this.saveState(); // Sauvegarder à chaque tick
 		}, 1000);
 	}
 
 	resetCountdown(): void {
 		clearInterval(this.intervalId!);
-		this.remainingTimeSubject.next(this.selectedTime * 60); // Remettre à la valeur sélectionnée
+		this.remainingTimeSubject.next(this.selectedTime * 60);
+		this.isRunningSubject.next(false);
+		this.saveState(); // Sauvegarder après la réinitialisation
 	}
 
 	ngOnDestroy(): void {
