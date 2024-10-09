@@ -1,2 +1,18 @@
 <p>settings works!</p>
+<div>
+	<h2>Settings</h2>
+	<label for="time-select">Choose a timer:</label>
+
+	<form>
+		<select
+			(change)="onTimeChange($event)"
+			style="padding: 10px; font-size: 12pt"
+		>
+			<option *ngFor="let time of availableTimes" [value]="time">
+				Watch clip: {{ time }}
+			</option>
+		</select>
+	</form>
+</div>
+
 <button (click)="navigateToHome()">Back to home</button>

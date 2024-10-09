@@ -34,28 +34,8 @@
 	</button>
 </div>
 
-<!-- Input pour sélectionner l'heure (entre 1 et 30 minutes) -->
-<label for="timeSelect">Choisir un temps :</label>
-
-<mat-form-field>
-	<mat-label>Select an option</mat-label>
-	<mat-select [(value)]="selectedTime" (change)="onTimeChange()">
-		<mat-option *ngFor="let time of availableTimes" [value]="time"
-			>{{ time }} minutes</mat-option
-		>
-	</mat-select>
-</mat-form-field>
-
-<!-- Bouton pour démarrer/pause le compte à rebours -->
-<button (click)="toggleCountdown()">
-	{{ isRunning ? 'Pause' : 'Démarrer' }}
-</button>
-
 <!-- Affichage du compte à rebours en format mm:ss -->
 <p>{{ displayTime }}</p>
 
 <!-- Affichage de la valeur en pourcentage -->
 <p>Progression: {{ value }}%</p>
-
-<!-- Bouton pour réinitialiser le compte à rebours -->
-<button (click)="resetCountdown()">Réinitialiser</button>

@@ -17,6 +17,10 @@ export class CountdownService implements OnDestroy {
 		this.loadSavedTime(); // Charge le temps sauvegardé au démarrage
 	}
 
+	getSelectedTime(): number {
+		return this.selectedTime;
+	}
+
 	// Charger la valeur depuis le localStorage
 	private loadSavedTime(): void {
 		const savedTime = localStorage.getItem('selectedTime');
