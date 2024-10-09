@@ -36,6 +36,10 @@ build/Release
 node_modules/
 jspm_packages/
 
+#angular-cache
+workspaces/angular-app/.angular
+workspaces/shared-lib/.dist
+
 # TypeScript v1 declaration files
 typings/
 
@@ -96,3 +100,4 @@ allure-results
 Thumbs.db
 setenv.cmd
 wdio-chromedriver.log
+
