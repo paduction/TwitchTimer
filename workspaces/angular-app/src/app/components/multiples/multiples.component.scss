@@ -1,23 +1,78 @@
-#multiples {
-	position: absolute;
-	left: 0;
-	top: 210px;
-	width: 100%;
+.controls {
+	margin-top: 20px;
 	display: flex;
 	justify-content: center;
-	color: #ffffff;
-	font-weight: 900;
+	align-items: center;
+}
 
-	.container {
-		background-color: #d47800e0;
-		border-radius: 4px;
-		padding: 20px;
+.icon-button {
+	background: #ffffff;
+	border: none;
+	cursor: pointer;
+	border: 1px solid #cccccc;
+	width: 40px;
+	height: 40px;
+	margin: 0 20px;
+	border-radius: 50px;
+	text-align: center;
+}
 
-		form {
-			display: flex;
-			> * {
-				margin: 5px;
-			}
-		}
+.icon-button img {
+	margin-top: 3px;
+	width: 20px;
+	height: 20px;
+}
+
+.main-button {
+	background-color: #ff8a00;
+	font-family: Montserrat, 'Helvetica Neue', sans-serif !important;
+	color: white;
+	border: none;
+	border-radius: 50px;
+	min-width: 122px;
+	padding: 10px 20px 10px 15px;
+	font-size: 18px;
+	font-weight: bold;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-image: asset;
+}
+
+.main-button img {
+	padding-right: 5px;
+	width: 24px;
+	height: 24px;
+}
+
+.main-button:hover {
+	background-color: #e67c00;
+}
+
+::ng-deep .spin-timer circle {
+	stroke-linecap: round; /* Arrondir les extrémités */
+	stroke: url(#linear-gradient) !important; /* Appliquer le dégradé */
+}
+
+::ng-deep .spin-timer svg {
+	width: 100px;
+	height: 100px;
+}
+
+/* Ajouter le dégradé avec une balise <defs> et <linearGradient> dans le CSS */
+::ng-deep .spin-timer defs {
+	content: '';
+}
+
+::ng-deep .spin-timer defs linearGradient {
+	/* Définition du dégradé */
+	stop {
+		stop-color: #ff8a00 !important; /* Début du dégradé */
+	}
+
+	stop:nth-child(2) {
+		stop-color: #000000 !important; /* Fin du dégradé */
+		offset: 100%;
 	}
 }

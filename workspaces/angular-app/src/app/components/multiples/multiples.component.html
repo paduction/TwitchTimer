@@ -1,12 +1,50 @@
+<div class="spinner-wrapper">
+	<svg width="0" height="0">
+		<defs>
+			<linearGradient id="linear-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+				<stop offset="0%" stop-color="#FFB84F" />
+				<stop offset="100%" stop-color="#F45F0B" />
+			</linearGradient>
+		</defs>
+	</svg>
+
+	<mat-progress-spinner
+		class="spin-timer"
+		[mode]="mode"
+		[value]="value"
+		strokeWidth="10"
+	>
+	</mat-progress-spinner>
+</div>
+
+<div class="controls">
+	<button id="settings-btn" class="icon-button">
+		<img
+			src="assets/svg/wheel.svg"
+			alt="Settings"
+			(click)="navigateToSettings()"
+		/>
+	</button>
+	<button id="start-btn" class="main-button" (click)="toggleCountdown()">
+		<img [src]="isRunning ? 'assets/svg/pause.svg' : 'assets/svg/play.svg'" />
+		<span>{{ isRunning ? 'Pause' : 'Start' }}</span>
+	</button>
+	<button id="reset-btn" class="icon-button" (click)="resetCountdown()">
+		<img src="assets/svg/reset.svg" alt="Reset" />
+	</button>
+</div>
+
 <!-- Input pour sélectionner l'heure (entre 1 et 30 minutes) -->
 <label for="timeSelect">Choisir un temps :</label>
 
 <mat-form-field>
 	<mat-label>Select an option</mat-label>
 	<mat-select [(value)]="selectedTime" (change)="onTimeChange()">
-	  <mat-option *ngFor="let time of availableTimes" [value]="time">{{ time }} minutes</mat-option>
+		<mat-option *ngFor="let time of availableTimes" [value]="time"
+			>{{ time }} minutes</mat-option
+		>
 	</mat-select>
-  </mat-form-field>
+</mat-form-field>
 
 <!-- Bouton pour démarrer/pause le compte à rebours -->
 <button (click)="toggleCountdown()">
@@ -21,42 +59,3 @@
 
 <!-- Bouton pour réinitialiser le compte à rebours -->
 <button (click)="resetCountdown()">Réinitialiser</button>
-
-
-<div>
-	<mat-card class="example-card">
-		<mat-card-content>
-			<h2 class="example-h2">Progress spinner configuration</h2>
-
-			<section class="example-section">
-				<label class="example-margin">Mode:</label>
-				<mat-radio-group [(ngModel)]="mode">
-					<mat-radio-button class="example-margin" value="determinate">
-						Determinate
-					</mat-radio-button>
-					<mat-radio-button class="example-margin" value="indeterminate">
-						Indeterminate
-					</mat-radio-button>
-				</mat-radio-group>
-			</section>
-
-			@if (mode === 'determinate') {
-			<section class="example-section">
-				<label class="example-margin">Progress:</label>
-				<mat-slider class="example-margin">
-					<input type="range" [(ngModel)]="value" matSliderThumb>
-				</mat-slider>
-			</section>
-			}
-		</mat-card-content>
-	</mat-card>
-
-	<mat-card class="example-card">
-		<mat-card-content>
-			<h2 class="example-h2">Result</h2>
-
-			<mat-progress-spinner class="example-margin" [mode]="mode" [value]="value">
-			</mat-progress-spinner>
-		</mat-card-content>
-	</mat-card>
-</div>
