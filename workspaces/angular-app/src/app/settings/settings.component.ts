@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CountdownService } from '../services/countdown.service';
+import { ElectronIpcService } from '../services/electron-ipc.service';
 
 @Component({
 	selector: 'app-settings',
@@ -16,9 +17,16 @@ export class SettingsComponent {
 
 	constructor(
 		private countdownService: CountdownService,
-		private router: Router
+		private router: Router,
+		private electronIpc: ElectronIpcService
 	) {
 		this.selectedTime = this.countdownService.getSelectedTime(); // Charge le temps sélectionné depuis le service
+
+		//test
+		const filePath = '/Volumes/Carlos/Streamlabs/timer.txt';
+		const time = '05:00'; // ou une autre valeur
+		const result = this.electronIpc.writeTimeToFile(filePath, time);
+		console.log(result);
 	}
 
 	onTimeChange(event: Event): void {
@@ -29,6 +37,16 @@ export class SettingsComponent {
 		const newTime: number = Number(selectedValue);
 
 		this.countdownService.setSelectedTime(newTime); // Met à jour le service
+	}
+
+	// Dans votre composant
+	async selectFile() {
+		const filePath = await this.electronIpc.openFile();
+		if (filePath) {
+			console.log('Fichier sélectionné :', filePath);
+			this.countdownService.setFilePath(filePath);
+			// Vous pouvez maintenant utiliser le chemin du fichier pour d'autres opérations
+		}
 	}
 
 	navigateToHome() {

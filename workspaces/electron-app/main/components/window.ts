@@ -1,9 +1,10 @@
 import * as remoteMain from '@electron/remote/main';
-import { app, BrowserWindow, ipcMain, nativeImage } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, nativeImage } from 'electron';
 import * as path from 'node:path';
 import { AbstractService } from '../services/abstract-service';
 import { MultiplesService } from '../services/multiples-service';
 import { Logger } from '../utils/logger';
+//import * as fs from 'fs'; // Vous devriez pouvoir utiliser fs ici
 
 declare const global: Global;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -15,6 +16,30 @@ export class Window {
 		this.createWindow();
 		this.loadRenderer();
 		this.registerService<number, number[]>(new MultiplesService());
+
+		// Ajoutez cette ligne pour écouter les demandes d'ouverture de fichier
+		ipcMain.handle('dialog:openFile', async (event, options) => {
+			const result = await dialog.showOpenDialog({
+				...options,
+				properties: ['openFile'], // Assurez-vous d'ouvrir un fichier
+			});
+			return result.filePaths[0]; // Retourne le chemin du fichier sélectionné
+		});
+
+		ipcMain.handle(
+			'writeTimeToFile',
+			async (event, filePath: string, time: string) => {
+				try {
+					console.log('Write file:', time, filePath);
+					//await fs.promises.appendFile(filePath, time + '\n'); // Écrit le temps dans le fichier
+					return { success: true };
+				} catch (error) {
+					console.error('Error writing to file:', error);
+					console.log(event);
+					return { success: false, error: error.message };
+				}
+			}
+		);
 	}
 
 	private createWindow(): void {

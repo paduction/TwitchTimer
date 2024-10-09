@@ -12,4 +12,6 @@ export interface WindowApi {
 	 * @param data the data sent by the renderer process to the main process
 	 */
 	send<In>(channel: string, input: In): void;
+
+	invoke<Out, In>(channel: string, input: In): Promise<Out>;
 }

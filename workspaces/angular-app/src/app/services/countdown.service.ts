@@ -8,6 +8,7 @@ export class CountdownService implements OnDestroy {
 	private intervalId: number | undefined;
 	private remainingTimeSubject = new BehaviorSubject<number>(0);
 	private isRunningSubject = new BehaviorSubject<boolean>(false);
+	private filePath: string = '';
 	public selectedTime: number = 1; // Temps sélectionné en minutes
 
 	remainingTime$ = this.remainingTimeSubject.asObservable();
@@ -16,6 +17,14 @@ export class CountdownService implements OnDestroy {
 
 	constructor() {
 		this.loadSavedState(); // Charge l'état sauvegardé (temps restant, état d'exécution)
+	}
+
+	setFilePath(filePath: string) {
+		this.filePath = filePath;
+	}
+
+	getFilePath(): string {
+		return this.filePath;
 	}
 
 	getSelectedTime(): number {

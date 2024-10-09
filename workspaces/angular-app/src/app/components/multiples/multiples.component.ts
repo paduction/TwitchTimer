@@ -88,6 +88,12 @@ export class MultiplesComponent implements OnInit, OnDestroy {
 		const seconds = remaining % 60;
 		this.displayTime = `${this.padZero(minutes)}:${this.padZero(seconds)}`;
 		this.updateValue(remaining);
+		console.log('File: ' + this.countdownService.getFilePath());
+		console.log('try to write: ' + this.displayTime);
+		this.electronIpc.writeTimeToFile(
+			this.countdownService.getFilePath(),
+			this.displayTime
+		);
 	}
 
 	// Mettre à jour la valeur du spinner en fonction du temps restant

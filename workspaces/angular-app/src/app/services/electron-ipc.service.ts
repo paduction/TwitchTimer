@@ -16,6 +16,26 @@ export class ElectronIpcService {
 		}
 	}
 
+	public async openFile(): Promise<string | undefined> {
+		return await this._api.invoke<
+			string,
+			{ filters: { name: string; extensions: string[] }[] }
+		>('dialog:openFile', {
+			filters: [{ name: 'Text Files', extensions: ['txt'] }],
+		});
+	}
+
+	public async writeTimeToFile(
+		filePath: string,
+		time: string
+	): Promise<{ success: boolean; error?: string }> {
+		console.log('Invoking writeTimeToFile with:', { filePath, time }); // Vérifiez ici
+		return await this._api.invoke<
+			{ success: boolean; error?: string },
+			{ filePath: string; time: string }
+		>('writeTimeToFile', { filePath, time }); // Assurez-vous que cet objet est bien passé
+	}
+
 	public receive<Out>(channel: string, callback: (output: Out) => void): void {
 		if (this._api) {
 			this._api.receive<Out>(channel, (output) => {

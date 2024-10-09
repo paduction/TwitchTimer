@@ -2,7 +2,7 @@
 <div>
 	<h2>Settings</h2>
 	<label for="time-select">Choose a timer:</label>
-
+	<button (click)="selectFile()">Sélectionner un Dossier</button>
 	<form>
 		<select
 			(change)="onTimeChange($event)"
