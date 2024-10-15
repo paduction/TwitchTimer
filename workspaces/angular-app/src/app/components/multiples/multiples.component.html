@@ -15,6 +15,7 @@
 		strokeWidth="10"
 	>
 	</mat-progress-spinner>
+	<div class="displayTime">{{ displayTime }}</div>
 </div>
 
 <div class="controls">
@@ -33,9 +34,3 @@
 		<img src="assets/svg/reset.svg" alt="Reset" />
 	</button>
 </div>
-
-<!-- Affichage du compte à rebours en format mm:ss -->
-<p>{{ displayTime }}</p>
-
-<!-- Affichage de la valeur en pourcentage -->
-<p>Progression: {{ value }}%</p>

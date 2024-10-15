@@ -41,8 +41,9 @@ export class Window {
 
 	private createWindow(): void {
 		this._electronWindow = new BrowserWindow({
-			width: 1280,
-			height: 720,
+			width: 310,
+			height: 410,
+			resizable: false, // Empêcher le redimensionnement
 			backgroundColor: '#FFFFFF',
 			icon: this.loadIcon(),
 			webPreferences: {
