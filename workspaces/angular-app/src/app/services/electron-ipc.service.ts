@@ -29,11 +29,8 @@ export class ElectronIpcService {
 		filePath: string,
 		time: string
 	): Promise<{ success: boolean; error?: string }> {
-		console.log('Invoking writeTimeToFile with:', { filePath, time }); // Vérifiez ici
-		return await this._api.invoke<
-			{ success: boolean; error?: string },
-			{ filePath: string; time: string }
-		>('writeTimeToFile', { filePath, time }); // Assurez-vous que cet objet est bien passé
+		console.log('Sending to main process:', { filePath, time });
+		return await this._api.invoke('writeTimeToFile', { filePath, time });
 	}
 
 	public receive<Out>(channel: string, callback: (output: Out) => void): void {

@@ -22,7 +22,7 @@ contextBridge.exposeInMainWorld('api', {
 			callback(parameters[0])
 		);
 	},
-	invoke: (channel: string) => ipcRenderer.invoke(channel),
+	invoke: <T>(channel: string, data: T) => ipcRenderer.invoke(channel, data),
 });
 
 console.log('The preload script has been injected successfully.');

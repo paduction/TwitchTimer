@@ -4,7 +4,8 @@ import * as path from 'node:path';
 import { AbstractService } from '../services/abstract-service';
 import { MultiplesService } from '../services/multiples-service';
 import { Logger } from '../utils/logger';
-//import * as fs from 'fs'; // Vous devriez pouvoir utiliser fs ici
+//const fs = require('fs');
+import * as fs from 'node:fs'; // Vous devriez pouvoir utiliser fs ici
 
 declare const global: Global;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -26,20 +27,16 @@ export class Window {
 			return result.filePaths[0]; // Retourne le chemin du fichier sélectionné
 		});
 
-		ipcMain.handle(
-			'writeTimeToFile',
-			async (event, filePath: string, time: string) => {
-				try {
-					console.log('Write file:', time, filePath);
-					//await fs.promises.appendFile(filePath, time + '\n'); // Écrit le temps dans le fichier
-					return { success: true };
-				} catch (error) {
-					console.error('Error writing to file:', error);
-					console.log(event);
-					return { success: false, error: error.message };
-				}
+		ipcMain.handle('writeTimeToFile', async (event, { filePath, time }) => {
+			try {
+				console.log('Writing to file:', filePath, time);
+				await fs.promises.writeFile(filePath, time + '\n'); // Remplace le contenu par 'time'
+				return { success: true };
+			} catch (error) {
+				console.error('Error writing to file:', error);
+				return { success: false, error: error.message };
 			}
-		);
+		});
 	}
 
 	private createWindow(): void {

@@ -46,6 +46,10 @@ export class MultiplesComponent implements OnInit, OnDestroy {
 
 		// Charger le temps sauvegardé
 		this.loadSavedTime();
+		console.log(
+			'Load Filepath : ' + this.countdownService.getFilePath(),
+			this.displayTime
+		);
 
 		// Gestion de la table de multiplication
 		this.electronIpc.receive<number[]>(
@@ -88,8 +92,12 @@ export class MultiplesComponent implements OnInit, OnDestroy {
 		const seconds = remaining % 60;
 		this.displayTime = `${this.padZero(minutes)}:${this.padZero(seconds)}`;
 		this.updateValue(remaining);
-		console.log('File: ' + this.countdownService.getFilePath());
-		console.log('try to write: ' + this.displayTime);
+
+		console.log(
+			'File / Time: ' + this.countdownService.getFilePath(),
+			this.displayTime
+		);
+
 		this.electronIpc.writeTimeToFile(
 			this.countdownService.getFilePath(),
 			this.displayTime
